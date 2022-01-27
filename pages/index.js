@@ -21,7 +21,7 @@ function Titulo(props) {
 
 export default function PaginaInicial() {
   
-  const [username, setUsername] = React.useState('israelgms');
+  const [username, setUsername] = React.useState('');
   const roteamento = useRouter();
 
   return (
@@ -29,7 +29,9 @@ export default function PaginaInicial() {
       <Box
         styleSheet={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          backgroundImage: 'url(https://i.redd.it/y212o9emoqt61.jpg)',
+          // backgroundImage: 'url(https://i.redd.it/y212o9emoqt61.jpg)',
+          backgroundColor: appConfig.theme.colors['light-blue'],
+          backgroundImage: 'url(/background.jpg)',
           backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
         }}
       >
@@ -62,12 +64,12 @@ export default function PaginaInicial() {
             }}
           >
             <Titulo tag="h2">Boas vindas de volta!</Titulo>
-            <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors['white'] }}>
+            <Text variant="body3" styleSheet={{ margin: '10px 0 32px 0', color: appConfig.theme.colors['white'] }}>
               {appConfig.name}
             </Text>
 
             <TextField
-              placeholder='Digite o seu usuário do github'
+              placeholder='Usuário github'
               value={username}
               onChange={function Handle(event) {
                 const valor = event.target.value
