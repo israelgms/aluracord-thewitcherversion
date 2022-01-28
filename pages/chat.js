@@ -29,6 +29,13 @@ export default function ChatPage() {
     setMensagem("");
   }
 
+  function deletarMensagem(props, mensagem) {
+    let deletarDaLista = props.mensagens.filter(object => object.id !== mensagem.id)
+    props.set(deletarDaLista)
+  }
+
+  
+
   return (
     <Box
       styleSheet={{
@@ -70,8 +77,12 @@ export default function ChatPage() {
             padding: "16px",
           }}
         >
-          <MessageList mensagens={listaDeMensagens} />
+
+
+          <MessageList mensagens={listaDeMensagens} set={setListaDeMensagens} delete={deletarMensagem}/>
           
+
+
           <Box
             as="form"
             styleSheet={{
@@ -102,6 +113,19 @@ export default function ChatPage() {
                 backgroundColor: appConfig.theme.colors["dark-blue"],
                 marginRight: "12px",
                 color: appConfig.theme.colors["white"],
+              }}
+            />
+            <Button
+              colorVariant="light"
+              iconName="arrowRight"
+              label="Enviar"
+              onClick={() => {
+                handleNovaMensagem(mensagem)
+              }}
+              variant="secondary"
+              styleSheet={{
+                padding: '12px',
+                marginBottom: '10px',
               }}
             />
           </Box>
@@ -136,7 +160,6 @@ function Header() {
 }
 
 function MessageList(props) {
-  console.log(props);
   return (
     <Box
       tag="ul"
@@ -159,7 +182,7 @@ function MessageList(props) {
               padding: "6px",
               marginBottom: "12px",
               hover: {
-                backgroundColor: appConfig.theme.colors["light-blue"],
+                backgroundColor: appConfig.theme.colors["dark-blue"],
               },
             }}
           >
@@ -182,7 +205,7 @@ function MessageList(props) {
               <Text tag="strong">{mensagem.de}</Text>
               <Text
                 styleSheet={{
-                  fontSize: "10px",
+                  fontSize: "11px",
                   marginLeft: "8px",
                   color: appConfig.theme.colors["light-blue"],
                 }}
@@ -190,6 +213,21 @@ function MessageList(props) {
               >
                 {new Date().toLocaleDateString()}
               </Text>
+              <button onClick={() => {
+                props.delete(props, mensagem);
+              }}
+              ><img src="/delete.png" height={'20px'}></img></button>
+                <style jsx>{`
+                                button {
+                                    background: none;
+                                    border: none;
+                                    border-radius: 2px;
+                                    margin-left: 15px;
+                                }
+                                button:hover {
+                                    cursor: pointer;
+                                }
+                `}</style>
             </Box>
             {mensagem.texto}
           </Text>
@@ -198,3 +236,4 @@ function MessageList(props) {
     </Box>
   );
 }
+
