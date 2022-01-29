@@ -1,40 +1,61 @@
 import { Box, Text, TextField, Image, Button } from "@skynexui/components";
 import React from "react";
 import appConfig from "../config.json";
+import { createClient } from "@supabase/supabase-js";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQxOTYzMCwiZXhwIjoxOTU4OTk1NjMwfQ.fts2aBxkXHMN0ghCv4mPpoBikqe16S0vYgArELFknVQ";
+const SUPABASE_URL = "https://fftuawrcsibzkjyhsjec.supabase.co";
+
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function ChatPage() {
   const [mensagem, setMensagem] = React.useState("");
   const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
 
-    /*
-    // Usuário
-    - Usuário digita no campo textarea
-    - Aperta enter para enviar
-    - Tem que adicionar o texto na listagem
-    
-    // Dev
-    - [X] Campo criado
-    - [X] Vamos usar o onChange usa o useState (ter if pra caso seja enter pra limpar a variavel)
-    - [X] Lista de mensagens 
-    */
+  React.useEffect(() => {
+    const dadosDoSupabase = supabaseClient
+      .from("mensagens")
+      .select("*")
+      .order("id", { ascending: false })
+      .then(({ data }) => {
+        setListaDeMensagens(data);
+      });
+  }, []);
 
   function handleNovaMensagem(novaMensagem) {
     const mensagem = {
-      id: listaDeMensagens.length + 1,
       de: "israelgms",
       texto: novaMensagem,
     };
 
-    setListaDeMensagens([mensagem, ...listaDeMensagens]);
+    supabaseClient
+      .from("mensagens")
+      .insert([mensagem])
+      .then(({ data }) => {
+        setListaDeMensagens([data[0], ...listaDeMensagens]);
+      });
     setMensagem("");
-  }
+    }
 
-  function deletarMensagem(props, mensagem) {
-    let deletarDaLista = props.mensagens.filter(object => object.id !== mensagem.id)
-    props.set(deletarDaLista)
-  }
+  function deletarMensagem(props, mensagemId) {
 
-  
+    supabaseClient
+      .from("mensagens")
+      .delete()
+      .match({ id: mensagemId})
+      .then((resp) => {
+        console.log(resp)
+      })
+
+      let deletarDaLista = props.mensagens.filter(
+        (item) => item.id !== mensagemId
+      );
+
+      props.set([
+        ...deletarDaLista
+      ]);
+  }
 
   return (
     <Box
@@ -77,11 +98,11 @@ export default function ChatPage() {
             padding: "16px",
           }}
         >
-
-
-          <MessageList mensagens={listaDeMensagens} set={setListaDeMensagens} delete={deletarMensagem}/>
-          
-
+          <MessageList
+            mensagens={listaDeMensagens}
+            set={setListaDeMensagens}
+            delete={deletarMensagem}
+          />
 
           <Box
             as="form"
@@ -120,12 +141,12 @@ export default function ChatPage() {
               iconName="arrowRight"
               label="Enviar"
               onClick={() => {
-                handleNovaMensagem(mensagem)
+                handleNovaMensagem(mensagem);
               }}
               variant="secondary"
               styleSheet={{
-                padding: '12px',
-                marginBottom: '10px',
+                padding: "12px",
+                marginBottom: "10px",
               }}
             />
           </Box>
@@ -189,7 +210,7 @@ function MessageList(props) {
             <Box
               styleSheet={{
                 marginBottom: "8px",
-                display: 'flex',
+                display: "flex",
               }}
             >
               <Image
@@ -200,7 +221,7 @@ function MessageList(props) {
                   display: "inline-block",
                   marginRight: "8px",
                 }}
-                src={`https://github.com/israelgms.png`}
+                src={`https://github.com/${mensagem.de}.png`}
               />
               <Text tag="strong">{mensagem.de}</Text>
               <Text
@@ -213,21 +234,24 @@ function MessageList(props) {
               >
                 {new Date().toLocaleDateString()}
               </Text>
-              <button onClick={() => {
-                props.delete(props, mensagem);
-              }}
-              ><img src="/delete.png" height={'20px'}></img></button>
-                <style jsx>{`
-                                button {
-                                    background: none;
-                                    border: none;
-                                    border-radius: 2px;
-                                    margin-left: 15px;
-                                }
-                                button:hover {
-                                    cursor: pointer;
-                                }
-                `}</style>
+              <button
+                onClick={() => {
+                  props.delete(props, mensagem.id);
+                }}
+              >
+                <img src="/delete.png" height={"20px"}></img>
+              </button>
+              <style jsx>{`
+                button {
+                  background: none;
+                  border: none;
+                  border-radius: 2px;
+                  margin-left: 15px;
+                }
+                button:hover {
+                  cursor: pointer;
+                }
+              `}</style>
             </Box>
             {mensagem.texto}
           </Text>
@@ -236,4 +260,3 @@ function MessageList(props) {
     </Box>
   );
 }
-
