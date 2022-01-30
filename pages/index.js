@@ -56,7 +56,7 @@ export default function PaginaInicial() {
             onSubmit={(event)=>{
               event.preventDefault();
               //Usando o hook do Next para mudar de página sem o "reload"
-              roteamento.push('/chat');
+              roteamento.push(`/chat?username=${username}`);
             }}
             styleSheet={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
