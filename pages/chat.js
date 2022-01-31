@@ -12,10 +12,12 @@ const SUPABASE_URL = "https://fftuawrcsibzkjyhsjec.supabase.co";
 
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+
+
 export default function ChatPage() {
+
   const roteamento = useRouter();
   const usuarioLogado = roteamento.query.username;
-
   const [mensagem, setMensagem] = React.useState("");
   const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
 
@@ -158,7 +160,10 @@ export default function ChatPage() {
               onKeyPress={(event) => {
                 if (event.key === "Enter") {
                   event.preventDefault();
-                  handleNovaMensagem(mensagem);
+                  if(mensagem.length < 2){
+                    alert('Mensagem muito curta! Minimo 2 caracteres')
+                  }else{handleNovaMensagem(mensagem);}
+                  
                 }
               }}
               placeholder="Insira sua mensagem aqui..."
@@ -186,7 +191,11 @@ export default function ChatPage() {
               iconName="arrowRight"
               label="Enviar"
               onClick={() => {
-                handleNovaMensagem(mensagem);
+                if(mensagem.length < 2){
+                  alert('Mensagem muito curta! Minimo 2 caracteres')
+                }else{
+                  handleNovaMensagem(mensagem);
+                }
               }}
               variant="secondary"
               styleSheet={{
@@ -202,6 +211,8 @@ export default function ChatPage() {
 }
 
 function Header() {
+  const roteamento = useRouter();
+  const usuarioLogado = roteamento.query.username;
   return (
     <>
       <Box
@@ -213,7 +224,14 @@ function Header() {
           justifyContent: "space-between",
         }}
       >
-        <Text variant="heading5">Chat</Text>
+        <Box>
+          <Text variant="heading5"
+          styleSheet={{
+            marginBottom: '15px'
+          }}
+          >Chat</Text>
+          <Text variant="heading5">Bem vindo de volta {usuarioLogado}!</Text>
+        </Box>
         <Button
           variant="tertiary"
           colorVariant="neutral"

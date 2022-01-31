@@ -22,7 +22,8 @@ function Titulo(props) {
 export default function PaginaInicial() {
   
   const [username, setUsername] = React.useState('');
-  const roteamento = useRouter();
+  const [checkUser, setCheckUser] = React.useState(true);
+  const roteamento = useRouter(); //
 
   return (
     <>
@@ -72,8 +73,12 @@ export default function PaginaInicial() {
               placeholder='Usuário github'
               value={username}
               onChange={function Handle(event) {
+                if(username.length >= 1) {
+                  console.log(username.length)
+                  setCheckUser(false)
+                }
                 const valor = event.target.value
-                setUsername(valor)
+                setUsername(valor);
               }}
               fullWidth
               textFieldColors={{
@@ -87,6 +92,7 @@ export default function PaginaInicial() {
             />
             <Button
               type='submit'
+              disabled={checkUser}
               label='Entrar'
               fullWidth
               buttonColors={{
