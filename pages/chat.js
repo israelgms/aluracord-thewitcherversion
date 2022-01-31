@@ -244,6 +244,7 @@ function Header() {
 }
 
 function MessageList(props) {
+  const imagem = '`https://github.com/${mensagem.de}.png`';
   return (
     <Box
       tag="ul"

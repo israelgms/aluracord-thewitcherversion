@@ -129,6 +129,9 @@ export default function PaginaInicial() {
                 marginBottom: '16px',
               }}
               src={`https://github.com/${username}.png`}
+              onError={() => {
+                setCheckUser(true) 
+              }}
             />
             <Text
               variant="body4"
@@ -138,7 +141,7 @@ export default function PaginaInicial() {
                 padding: '5px 15px',
                 borderRadius: '1000px'
               }}
-            >
+            > 
               {username}
             </Text>
           </Box>
