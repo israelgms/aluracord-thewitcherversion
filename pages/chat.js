@@ -21,6 +21,7 @@ export default function ChatPage() {
   const [mensagem, setMensagem] = React.useState("");
   const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
 
+
   function escutaMensagensEmTempoReal(adicionaMensagem, removerMensagem){
     return supabaseClient
     .from('mensagens')
@@ -44,7 +45,9 @@ export default function ChatPage() {
         setListaDeMensagens((valorAtualDaLista) => {
           return [novaMensagem, ...valorAtualDaLista]
         });
-      }, (mensagemDeletada) => {
+      },
+      
+      (mensagemDeletada) => {
         setListaDeMensagens((valorAtualDaLista) => {
           let deletarDaLista = valorAtualDaLista.filter(
             (mensagem) => mensagem.id !== mensagemDeletada.id
@@ -53,8 +56,7 @@ export default function ChatPage() {
             ...deletarDaLista
           ]
         })
-      } 
-      
+      },     
       );
 
 
@@ -62,6 +64,7 @@ export default function ChatPage() {
   }, []);
 
   function handleNovaMensagem(novaMensagem) {
+    
     const mensagem = {
       de: usuarioLogado,
       texto: novaMensagem,
@@ -86,14 +89,6 @@ export default function ChatPage() {
         )
         setListaDeMensagens(deletarDaLista)
       })
-
-      // let deletarDaLista = props.mensagens.filter(
-      //   (item) => item.id !== mensagemId
-      // );
-
-      // props.set([
-      //   ...deletarDaLista
-      // ]);
   }
 
   return (
@@ -259,7 +254,7 @@ function MessageList(props) {
     >
       {props.mensagens.map((mensagem) => {
         return (
-          <Text
+          <Text 
             key={mensagem.id}
             tag="li"
             styleSheet={{
@@ -296,7 +291,13 @@ function MessageList(props) {
                 }}
                 tag="span"
               >
-                {new Date().toLocaleDateString()}
+                { 
+                  <>
+                    <span>{new Date(mensagem.created_at).toLocaleDateString()} </span>
+                    <span>{ String(new Date(mensagem.created_at).getHours(-3)).length === 1 ? `0${new Date(mensagem.created_at).getHours(-3)}` : new Date(mensagem.created_at).getHours(-3)}:</span>
+                    <span>{ String(new Date(mensagem.created_at).getMinutes()).length === 1 ? `0${new Date(mensagem.created_at).getMinutes()}`: new Date(mensagem.created_at).getMinutes()}</span>
+                  </>           
+                }
               </Text>
 
               { props.usuarioLogado === mensagem.de &&
